@@ -1,10 +1,21 @@
 import numpy as np
 import math
+import torch
+import torch.nn.functional as F
+import torch.nn as nn
+import torchvision
 np.seterr(over='ignore')
 
 
 # some constants
 WIDTH = 4.0
+
+def smooth_gpu(src_tensor, sigma):
+
+    sigma = max(sigma, 0.01)
+    length = int(math.ceil(sigma * WIDTH)) + 1
+
+    return torchvision.transforms.GaussianBlur(length, sigma=2*sigma)(src_tensor.unsqueeze(0).unsqueeze(0)).squeeze(0).squeeze(0)
 
 
 # convolve image with gaussian filter

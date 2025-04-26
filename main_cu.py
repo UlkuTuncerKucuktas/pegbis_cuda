@@ -130,7 +130,7 @@ def segment(in_image, sigma, k, min_size):
 if __name__ == "__main__":
     sigma = 0.5
     k = 500
-    min_size = 50
+    min_size = 100
     input_image = io.imread("data/paris.jpg")
     
     print("Image loaded. Processing...")

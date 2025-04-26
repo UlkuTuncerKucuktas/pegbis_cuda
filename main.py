@@ -28,6 +28,7 @@ def segment(in_image, sigma, k, min_size):
     smooth_blue_band = smooth(in_image[:, :, 2], sigma)
 
     # build graph
+    graph_start_time = time.time()
     edges_size = width * height * 4
     edges = np.zeros(shape=(edges_size, 3), dtype=object)
     num = 0
@@ -55,6 +56,9 @@ def segment(in_image, sigma, k, min_size):
                 edges[num, 1] = int((y - 1) * width + (x + 1))
                 edges[num, 2] = diff(smooth_red_band, smooth_green_band, smooth_blue_band, x, y, x + 1, y - 1)
                 num += 1
+    graph_time = time.time() - graph_start_time
+    print(f"Graph building time: {graph_time:.2f} seconds")
+
     # Segment
     u = segment_graph(width * height, num, edges, k)
 
@@ -83,16 +87,11 @@ def segment(in_image, sigma, k, min_size):
         "Execution time: " + str(int(elapsed_time / 60)) + " minute(s) and " + str(
             int(elapsed_time % 60)) + " seconds")
 
-    # displaying the result
-    fig = plt.figure()
-    a = fig.add_subplot(1, 2, 1)
-    plt.imshow(in_image)
-    a.set_title('Original Image')
-    a = fig.add_subplot(1, 2, 2)
-    output = output.astype(int)
-    plt.imshow(output)
-    a.set_title('Segmented Image')
-    plt.show()
+    # Convert output to uint8 format (0-255) for proper image saving
+    output = (output * 255).astype(np.uint8)
+    output_path = "segmented_result.jpg"
+    io.imsave(output_path, output)
+    print(f"Segmented image saved to {output_path}")
 
 
 if __name__ == "__main__":
