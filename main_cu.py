@@ -14,9 +14,9 @@ def segment(in_image, sigma, k, min_size):
     def to_tensor(band):
         return torch.from_numpy(band).cuda().float()
     
-    smooth_red = smooth_gpu(to_tensor(in_image[:, :, 0]), sigma)
-    smooth_green = smooth_gpu(to_tensor(in_image[:, :, 1]), sigma)
-    smooth_blue = smooth_gpu(to_tensor(in_image[:, :, 2]), sigma)
+    smooth_red = torch.tensor(smooth(in_image[:, :, 0], sigma)).cuda()
+    smooth_green = torch.tensor(smooth(in_image[:, :, 1], sigma)).cuda()
+    smooth_blue = torch.tensor(smooth(in_image[:, :, 2], sigma)).cuda()
 
   
     image_tensor = torch.stack([smooth_red, smooth_green, smooth_blue], dim=2)
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     sigma = 0.5
     k = 500
     min_size = 100
-    input_image = io.imread("data/paris.jpg")
+    input_image = io.imread("data/bridge.jpg")
     
     print("Image loaded. Processing...")
     segment(input_image, sigma, k, min_size)
